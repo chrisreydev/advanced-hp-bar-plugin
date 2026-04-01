@@ -9,7 +9,6 @@ import net.runelite.api.Point;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
-import net.runelite.client.ui.overlay.OverlayPriority;
 
 import javax.inject.Inject;
 import java.awt.Color;
@@ -33,7 +32,6 @@ public class AdvancedHpBarOverlay extends Overlay
         this.config = config;
         setPosition(OverlayPosition.DYNAMIC);
         setLayer(OverlayLayer.ALWAYS_ON_TOP);
-        setPriority(OverlayPriority.MED);
     }
 
     @Override
@@ -54,7 +52,7 @@ public class AdvancedHpBarOverlay extends Overlay
         final Point canvasPoint = Perspective.localToCanvas(
                 client,
                 localLocation,
-                client.getPlane(),
+                client.getTopLevelWorldView().getPlane(),
                 localPlayer.getLogicalHeight() + config.zOffset()
         );
 

@@ -44,7 +44,7 @@ public interface AdvancedHpBarConfig extends Config
     )
     default boolean alwaysOn()
     {
-        return true;
+        return false;
     }
 
     @ConfigItem(
@@ -96,7 +96,7 @@ public interface AdvancedHpBarConfig extends Config
     @Range(min = -500, max = 500)
     default int barXOffset()
     {
-        return -40;
+        return -28;
     }
 
     // -------------------------------------------------------------------------
@@ -188,7 +188,7 @@ public interface AdvancedHpBarConfig extends Config
     )
     default boolean showPrayerBar()
     {
-        return false;
+        return true;
     }
 
     @ConfigItem(
