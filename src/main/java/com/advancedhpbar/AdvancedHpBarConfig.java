@@ -188,7 +188,7 @@ public interface AdvancedHpBarConfig extends Config
     )
     default boolean showPrayerBar()
     {
-        return false;
+        return true;
     }
 
     @ConfigItem(
