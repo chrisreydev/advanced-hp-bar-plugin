@@ -3,51 +3,47 @@ package com.advancedhpbar;
 import com.google.inject.Provides;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
-import net.runelite.api.GameState;
-import net.runelite.api.events.GameStateChanged;
 import net.runelite.client.config.ConfigManager;
-import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.ui.overlay.OverlayManager;
 
 @Slf4j
 @PluginDescriptor(
-	name = "Advanced HP Bar"
+        name = "Advanced Hp Bar"
 )
 public class AdvancedHpBarPlugin extends Plugin
 {
-	@Inject
-	private Client client;
+    @Inject
+    private Client client;
 
-	@Inject
-	private AdvancedHpBarConfig config;
+    @Inject
+    private AdvancedHpBarConfig config;
 
-	@Override
-	protected void startUp() throws Exception
-	{
-		log.debug("AdvancedHpBar started!");
-	}
+    @Inject
+    private OverlayManager overlayManager;
 
-	@Override
-	protected void shutDown() throws Exception
-	{
-		log.debug("AdvancedHpBar stopped!");
-	}
+    @Inject
+    private AdvancedHpBarOverlay overlay;
 
-	@Subscribe
-	public void onGameStateChanged(GameStateChanged gameStateChanged)
-	{
-		if (gameStateChanged.getGameState() == GameState.LOGGED_IN)
-		{
-			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "AdvancedHpBar says " + config.greeting(), null);
-		}
-	}
+    @Override
+    protected void startUp()
+    {
+        log.info("Advanced HP Bar started!");
+        overlayManager.add(overlay);
+    }
 
-	@Provides
+    @Override
+    protected void shutDown()
+    {
+        log.info("Advanced HP Bar stopped!");
+        overlayManager.remove(overlay);
+    }
+
+    @Provides
     AdvancedHpBarConfig provideConfig(ConfigManager configManager)
-	{
-		return configManager.getConfig(AdvancedHpBarConfig.class);
-	}
+    {
+        return configManager.getConfig(AdvancedHpBarConfig.class);
+    }
 }
