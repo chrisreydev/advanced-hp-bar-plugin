@@ -96,7 +96,7 @@ public interface AdvancedHpBarConfig extends Config
     @Range(min = -500, max = 500)
     default int barXOffset()
     {
-        return -40;
+        return -28;
     }
 
     // -------------------------------------------------------------------------
