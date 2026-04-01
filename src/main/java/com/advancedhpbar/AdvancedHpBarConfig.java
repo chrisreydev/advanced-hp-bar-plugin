@@ -44,7 +44,7 @@ public interface AdvancedHpBarConfig extends Config
     )
     default boolean alwaysOn()
     {
-        return true;
+        return false;
     }
 
     @ConfigItem(
