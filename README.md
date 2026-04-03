@@ -1,10 +1,10 @@
 # Advanced HP Bar
 
-A customizable HP bar overlay for your local player, replacing the default combat bar with a segmented design that gives you more control over how your health — and optionally your prayer — is displayed.
+A customizable HP bar overlay for your local player, replacing the default HP bar with a segmented design that gives you more control over how your health and your prayer is displayed.
 
+<img width="300" height="300" alt="advanced-hp-bar-1" src="https://github.com/user-attachments/assets/b2cd855f-6499-4070-bc39-2b800618a8cc" />
+<img width="300" height="300" alt="advanced-hp-bar-2" src="https://github.com/user-attachments/assets/2a325d58-7865-40b7-afe2-3ce59a6197ae" />
 
-<img width="200" height="200" alt="Screenshot 2026-04-01 at 3 45 17 PM" src="https://github.com/user-attachments/assets/d35a5de9-405f-48d7-bbf3-b0e8d56ef910" />
-<img width="200" height="200" alt="Screenshot 2026-04-01 at 3 48 16 PM" src="https://github.com/user-attachments/assets/1f21654e-1117-4d6e-a6a7-9090a0b8703d" />
 
 
 ---
@@ -12,13 +12,13 @@ A customizable HP bar overlay for your local player, replacing the default comba
 ## Features
 
 - **Segmented HP bar** — HP is split into boxes, each representing a configurable number of HP points (e.g. 10 HP per box)
-- **Fixed bar width** — the bar always renders at a fixed pixel width regardless of how many boxes there are
+- **Fixed bar width** — the bar always renders at a configurable fixed pixel width regardless of how many boxes there are
 - **Low HP warning color** — the bar switches to a separate color when HP drops below a configurable threshold
 - **Damaged HP color** — the empty portion of each box is colored to indicate missing HP
 - **Optional prayer bar** — a thin bar below the HP bar showing current prayer points as a proportion of max prayer
-- **Always-on mode** — optionally show the bar at all times, not just during combat
+- **Always-on mode** — optionally show the bar at all times, even outside of combat
 - **Fully configurable colors** — every color in the overlay is customizable
-- **Position offsets** — adjust the bar's horizontal position, vertical position, and world-space Z offset to align it exactly where you want
+- **Position offsets** — adjust the bar's horizontal position, vertical position, and world-space Z offset
 
 ---
 
@@ -29,11 +29,11 @@ Settings are grouped into three sections in the config panel:
 ### General
 | Setting | Description | Default |
 |---|---|---|
-| Always Show | Show the bar at all times, not just during combat | `true` |
+| Always Show | Show the bar at all times, not just during combat | `false` |
 | Bar Width | Total fixed width of the bar in pixels | `60` |
 | Z Offset | Vertical world-space offset for alignment above the player model | `23` |
 | Vertical Offset | How high above the character to render the bar | `-3` |
-| Horizontal Offset | Horizontal offset relative to the player's centre | `-40` |
+| Horizontal Offset | Horizontal offset relative to the player's centre | `-28` |
 
 ### HP Bar
 | Setting | Description | Default |
@@ -48,7 +48,7 @@ Settings are grouped into three sections in the config panel:
 ### Prayer Bar
 | Setting | Description | Default |
 |---|---|---|
-| Show Prayer Bar | Display a thin prayer bar below the HP bar | `false` |
+| Show Prayer Bar | Display a thin prayer bar below the HP bar | `true` |
 | Prayer Color | Color of the prayer points fill | Cyan |
 | Prayer Background Color | Background color of the prayer bar | Black |
 
@@ -56,6 +56,6 @@ Settings are grouped into three sections in the config panel:
 
 ## How it works
 
-The HP bar is divided into segments, each representing a fixed number of HP (configured via **HP Per Box**). The total bar width is fixed in pixels and the segments scale to fill it evenly. The last segment is proportionally smaller if your max HP is not evenly divisible by the HP per box value.
+The HP bar is divided into segments, each representing a fixed number of HP (configured via **HP Per Box**).
 
-The prayer bar, when enabled, renders as a single thin bar directly below the HP bar. It fills proportionally from left to right based on your current prayer points relative to your maximum.
+The prayer bar renders as a single thin bar directly below the HP bar.
