@@ -160,7 +160,7 @@ public interface AdvancedHpBarConfig extends Config
     )
     default int lowHpThreshold()
     {
-        return 0;
+        return 5;
     }
 
     @ConfigItem(
