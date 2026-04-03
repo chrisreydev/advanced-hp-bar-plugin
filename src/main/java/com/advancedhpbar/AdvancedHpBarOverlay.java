@@ -85,22 +85,23 @@ public class AdvancedHpBarOverlay extends Overlay
         final int lastBoxCapacity = maxHp % config.hpPerBox() == 0 ? config.hpPerBox() : maxHp % config.hpPerBox();
         final int numFullBoxes = lastBoxCapacity == config.hpPerBox() ? numBoxes : numBoxes - 1;
 
-        // Last box width is proportional to its capacity vs a full box
         final double lastBoxRatio = (double) lastBoxCapacity / config.hpPerBox();
-        // Full boxes share remaining space after last box and gaps
         final double fullBoxWidth = (barWidth - totalGaps) / (numFullBoxes + lastBoxRatio);
         final double lastBoxWidth = fullBoxWidth * lastBoxRatio;
 
         g.setColor(config.hpBackgroundColor());
         g.fillRect(barX, barY, barWidth, BOX_HEIGHT);
 
-        double cursorX = barX;
         for (int i = 0; i < numBoxes; i++)
         {
             final boolean isLastBox = (i == numBoxes - 1);
             final int boxCapacity = isLastBox ? lastBoxCapacity : config.hpPerBox();
-            final int thisBoxPixelWidth = (int) Math.round(isLastBox ? lastBoxWidth : fullBoxWidth);
-            final int boxX = (int) Math.round(cursorX);
+
+            final double floatStart = barX + i * (fullBoxWidth + BOX_GAP);
+            final double floatEnd = floatStart + (isLastBox ? lastBoxWidth : fullBoxWidth);
+            final int boxX = (int) Math.round(floatStart);
+            final int boxEnd = (int) Math.round(floatEnd);
+            final int thisBoxPixelWidth = boxEnd - boxX;
 
             final int boxMinHp = i * config.hpPerBox();
             final int thisBoxFill = Math.max(0, Math.min(currentHp - boxMinHp, boxCapacity));
@@ -114,8 +115,6 @@ public class AdvancedHpBarOverlay extends Overlay
                 g.setColor(getHpColor(currentHp));
                 g.fillRect(boxX, barY, fillWidth, BOX_HEIGHT);
             }
-
-            cursorX += (isLastBox ? lastBoxWidth : fullBoxWidth) + BOX_GAP;
         }
     }
 
