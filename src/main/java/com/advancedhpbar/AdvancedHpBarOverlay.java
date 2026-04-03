@@ -81,19 +81,30 @@ public class AdvancedHpBarOverlay extends Overlay
         final int currentHp = client.getBoostedSkillLevel(Skill.HITPOINTS);
         final int numBoxes = (int) Math.ceil((double) maxHp / config.hpPerBox());
         final int totalGaps = (numBoxes - 1) * BOX_GAP;
-        final double boxWidth = (double)(barWidth - totalGaps) / numBoxes;
+
+        final int lastBoxCapacity = maxHp % config.hpPerBox() == 0 ? config.hpPerBox() : maxHp % config.hpPerBox();
+        final int numFullBoxes = lastBoxCapacity == config.hpPerBox() ? numBoxes : numBoxes - 1;
+
+        // Last box width is proportional to its capacity vs a full box
+        final double lastBoxRatio = (double) lastBoxCapacity / config.hpPerBox();
+        // Full boxes share remaining space after last box and gaps
+        final double fullBoxWidth = (barWidth - totalGaps) / (numFullBoxes + lastBoxRatio);
+        final double lastBoxWidth = fullBoxWidth * lastBoxRatio;
 
         g.setColor(config.hpBackgroundColor());
         g.fillRect(barX, barY, barWidth, BOX_HEIGHT);
 
+        double cursorX = barX;
         for (int i = 0; i < numBoxes; i++)
         {
-            final int boxX = barX + (int) Math.round(i * (boxWidth + BOX_GAP));
+            final boolean isLastBox = (i == numBoxes - 1);
+            final int boxCapacity = isLastBox ? lastBoxCapacity : config.hpPerBox();
+            final int thisBoxPixelWidth = (int) Math.round(isLastBox ? lastBoxWidth : fullBoxWidth);
+            final int boxX = (int) Math.round(cursorX);
+
             final int boxMinHp = i * config.hpPerBox();
-            final int thisBoxCapacity = Math.min(boxMinHp + config.hpPerBox(), maxHp) - boxMinHp;
-            final int thisBoxPixelWidth = (int) Math.round(boxWidth * ((double) thisBoxCapacity / config.hpPerBox()));
-            final int thisBoxFill = Math.max(0, Math.min(currentHp - boxMinHp, thisBoxCapacity));
-            final int fillWidth = (int) Math.round(thisBoxPixelWidth * ((double) thisBoxFill / thisBoxCapacity));
+            final int thisBoxFill = Math.max(0, Math.min(currentHp - boxMinHp, boxCapacity));
+            final int fillWidth = (int) Math.round(thisBoxPixelWidth * ((double) thisBoxFill / boxCapacity));
 
             g.setColor(config.hpDamagedColor());
             g.fillRect(boxX, barY, thisBoxPixelWidth, BOX_HEIGHT);
@@ -103,6 +114,8 @@ public class AdvancedHpBarOverlay extends Overlay
                 g.setColor(getHpColor(currentHp));
                 g.fillRect(boxX, barY, fillWidth, BOX_HEIGHT);
             }
+
+            cursorX += (isLastBox ? lastBoxWidth : fullBoxWidth) + BOX_GAP;
         }
     }
 
