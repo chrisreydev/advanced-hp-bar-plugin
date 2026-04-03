@@ -1,9 +1,10 @@
 # Advanced HP Bar
 
-A customizable HP bar overlay for your local player, replacing the default HP bar with a segmented design that gives you more control over how your health and your prayer is displayed.
+A customizable HP bar overlay for your local player, replacing the default HP bar with a segmented design that gives you more control over how your health and your prayer are displayed.
 
-<img width="300" height="300" alt="advanced-hp-bar-1" src="https://github.com/user-attachments/assets/b2cd855f-6499-4070-bc39-2b800618a8cc" />
-<img width="300" height="300" alt="advanced-hp-bar-2" src="https://github.com/user-attachments/assets/2a325d58-7865-40b7-afe2-3ce59a6197ae" />
+<img width="250" height="250" alt="advanced-hp-bar-1" src="https://github.com/user-attachments/assets/b2cd855f-6499-4070-bc39-2b800618a8cc" />
+<img width="250" height="250" alt="advanced-hp-bar-2" src="https://github.com/user-attachments/assets/2a325d58-7865-40b7-afe2-3ce59a6197ae" />
+<img width="246" height="525" alt="Screenshot 2026-04-02 at 6 23 44 PM" src="https://github.com/user-attachments/assets/13a157fc-b9f4-48b6-92e9-cf3f05690a5d" />
 
 
 
@@ -42,7 +43,7 @@ Settings are grouped into three sections in the config panel:
 | HP Color | Color of the filled (current HP) portion | Green |
 | HP Damaged Color | Color of the empty (missing HP) portion | Red |
 | HP Background Color | Background color drawn behind all boxes | Black |
-| Low HP Threshold | HP value at which the bar switches to the low HP color. Set to `0` to disable | `0` |
+| Low HP Threshold | HP value at which the bar switches to the low HP color. Set to `0` to disable | `5` |
 | Low HP Color | Color used when HP drops below the threshold | Yellow |
 
 ### Prayer Bar
