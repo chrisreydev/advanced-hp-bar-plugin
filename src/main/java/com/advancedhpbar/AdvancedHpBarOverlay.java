@@ -26,16 +26,20 @@ public class AdvancedHpBarOverlay extends Overlay
     private static final int BOX_GAP = 1;
     private static final int BOX_HEIGHT = 5;
     private static final int PRAYER_BAR_GAP = 1;
+    private static final int TICK_LENGTH = 600;
+    private static final int SWIPE_LINE_WIDTH = 3;
 
     private final Client client;
     private final AdvancedHpBarConfig config;
+    private final AdvancedHpBarPlugin plugin;
     private final ItemStatChangesService itemStatService;
 
     @Inject
-    public AdvancedHpBarOverlay(Client client, AdvancedHpBarConfig config, ItemStatChangesService itemstatservice)
+    public AdvancedHpBarOverlay(Client client, AdvancedHpBarConfig config, AdvancedHpBarPlugin plugin, ItemStatChangesService itemstatservice)
     {
         this.client = client;
         this.config = config;
+        this.plugin = plugin;
         this.itemStatService = itemstatservice;
         setPosition(OverlayPosition.DYNAMIC);
         setLayer(OverlayLayer.ALWAYS_ON_TOP);
@@ -300,7 +304,6 @@ public class AdvancedHpBarOverlay extends Overlay
             g.fillRect(barX, prayerBarY, prayerFillWidth, barHeight);
         }
 
-        // Prayer restore preview starting where the prayer bar fill ends
         if (prayerRestoreValue > 0 && currentPrayer < maxPrayer && maxPrayer > 0)
         {
             final int prayerHealCap = Math.min(currentPrayer + prayerRestoreValue, maxPrayer);
@@ -311,6 +314,14 @@ public class AdvancedHpBarOverlay extends Overlay
                 g.setColor(config.prayerRestoreColor());
                 g.fillRect(barX + restoreStart, prayerBarY, restoreWidth, barHeight);
             }
+        }
+
+        if (config.prayerFlickOn()) {
+            final long ms = plugin.millisSinceTick();
+            int swipeLineX = (int) (barWidth * ms / (double) TICK_LENGTH);
+            swipeLineX = Math.min(swipeLineX, barWidth - SWIPE_LINE_WIDTH);
+            g.setColor(config.prayerFlickColor());
+            g.fillRect(barX + swipeLineX, prayerBarY, SWIPE_LINE_WIDTH, barHeight);
         }
     }
 
