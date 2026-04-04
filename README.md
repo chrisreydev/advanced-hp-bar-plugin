@@ -2,12 +2,13 @@
 A customizable HP bar overlay for your local player, replacing the default HP bar with a segmented design that gives you more control over how your health and prayer are displayed.
 
 
-<img width="450" height="450" src="https://github.com/user-attachments/assets/a9cbea2f-337a-4a82-be41-d76af31e5f5f" />
-<img width="200"  src="https://github.com/user-attachments/assets/e81870e3-c0fb-4ebf-8225-d84a94be5f87" />
+
+<img width="400" src="https://github.com/user-attachments/assets/17a46bfc-0ccf-4b27-aa2f-5ef5cf2d56ed" />
+<img width="200" src="https://github.com/user-attachments/assets/bc7d92cb-8828-4be7-a212-1266dc24ba63" />
+
+<img width="250" src="https://github.com/user-attachments/assets/6cd8c916-63f9-4462-a8c2-33d386f599f0" />
 
 
-<img width="210" height="210" src="https://github.com/user-attachments/assets/b2cd855f-6499-4070-bc39-2b800618a8cc" />
-<img width="210" height="210" src="https://github.com/user-attachments/assets/7cbc6e74-8351-4360-b0ce-13e993a6dc46" />
 
 ---
 
