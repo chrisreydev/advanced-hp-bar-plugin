@@ -197,7 +197,7 @@ public interface AdvancedHpBarConfig extends Config
     )
     default Color foodHealColor()
     {
-        return new Color(255, 185, 197, 255);
+        return new Color(228, 148, 148, 255);
     }
     // -------------------------------------------------------------------------
     // Prayer Bar
@@ -237,7 +237,7 @@ public interface AdvancedHpBarConfig extends Config
     )
     default Color prayerRestoreColor()
     {
-        return new Color(180, 180, 255, 180); // soft blue, semi-transparent
+        return new Color(187, 187, 255, 255); // soft blue, semi-transparent
     }
 
     @ConfigItem(
