@@ -3,11 +3,10 @@ A customizable HP bar overlay for your local player, replacing the default HP ba
 
 
 
-<img width="400" src="https://github.com/user-attachments/assets/17a46bfc-0ccf-4b27-aa2f-5ef5cf2d56ed" />
-<img width="200" src="https://github.com/user-attachments/assets/bc7d92cb-8828-4be7-a212-1266dc24ba63" />
-
-<img width="250" src="https://github.com/user-attachments/assets/6cd8c916-63f9-4462-a8c2-33d386f599f0" />
-
+<img width="350" src="https://github.com/user-attachments/assets/17a46bfc-0ccf-4b27-aa2f-5ef5cf2d56ed" />
+<img width="350" src="https://github.com/user-attachments/assets/eae63fbc-844f-4f5e-9870-1f201421f55e" />
+<img width="290" src="https://github.com/user-attachments/assets/3c75fd20-142e-45d2-ae66-9b53570de6a5" />
+<img width="231" height="711" alt="Screenshot 2026-04-04 at 2 09 52 PM" src="https://github.com/user-attachments/assets/e19b367c-61a1-4839-b32a-3661d308f4d3" />
 
 
 ---
@@ -19,6 +18,7 @@ A customizable HP bar overlay for your local player, replacing the default HP ba
 - **Damaged HP color** — the empty portion of each box is colored to indicate missing HP
 - **Food heal preview** — hovering a food item in your inventory highlights the portion of the bar that would be restored, starting exactly where your current HP ends
 - **Optional prayer bar** — a thin bar below the HP bar showing current prayer points as a proportion of max prayer
+- **Prayer tick swipe line** — an optional line that sweeps left to right across the prayer bar once per game tick, giving a visual reference for tick timing
 - **Low prayer warning color** — the prayer bar switches to a separate color when prayer drops below a configurable threshold (disabled by default)
 - **Prayer restore preview** — hovering a prayer-restoring item in your inventory highlights the portion of the prayer bar that would be restored
 - **Always-on mode** — optionally show the bar at all times, even outside of combat
@@ -62,6 +62,8 @@ Settings are grouped into three sections in the config panel:
 | Low Prayer Color | Color used when prayer drops below the threshold | Yellow |
 | Prayer Restore Preview Color | Color of the restore preview shown when hovering a prayer item in your inventory | Light Blue |
 | Prayer Bar Height | Height of the prayer bar in pixels | `3` |
+| Prayer Flick Helper | Display a swipe line on the prayer bar that travels left to right once per game tick | `false` |
+| Prayer Flick Color | Color of the prayer flick swipe line | Black |
 
 ---
 
@@ -75,3 +77,5 @@ Setting **HP Per Box** to `0` switches to a single full-width bar. If overhealed
 When hovering a food item in your inventory, a colored preview is drawn on the HP bar showing exactly how much HP would be restored — starting precisely where your current HP ends and capped at your maximum HP. The same applies to the prayer bar when hovering items that restore prayer points.
 
 The prayer bar renders as a single thin bar directly below the HP bar. When **Low Prayer Threshold** is set to a value above `0`, the prayer bar will switch to the **Low Prayer Color** once your prayer points drop to or below that value, mirroring the low HP warning behavior.
+
+When **Prayer Flick Helper** is enabled, a swipe line travels across the prayer bar from left to right once every game tick (600ms), resetting at the start of each tick. This gives a continuous visual reference for tick timing, useful for prayer flicking or other tick-based mechanics. The line color is configurable via **Prayer Flick Color**.
