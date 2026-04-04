@@ -25,7 +25,6 @@ public class AdvancedHpBarOverlay extends Overlay
 {
     private static final int BOX_GAP = 1;
     private static final int BOX_HEIGHT = 5;
-    private static final int PRAYER_BAR_HEIGHT = 2;
     private static final int PRAYER_BAR_GAP = 1;
 
     private final Client client;
@@ -72,12 +71,13 @@ public class AdvancedHpBarOverlay extends Overlay
         final int barX = canvasPoint.getX() + config.barXOffset();
         final int barY = canvasPoint.getY() + config.barHeightOffset();
         final int barWidth = config.barWidth();
+        final int prayerBarHeight = config.prayerBarHeight();
 
         renderHpBar(g, barX, barY, barWidth);
 
         if (config.showPrayerBar())
         {
-            renderPrayerBar(g, barX, barY, barWidth);
+            renderPrayerBar(g, barX, barY, barWidth, prayerBarHeight);
         }
 
         return null;
@@ -283,7 +283,7 @@ public class AdvancedHpBarOverlay extends Overlay
         }
     }
 
-    private void renderPrayerBar(Graphics2D g, int barX, int barY, int barWidth)
+    private void renderPrayerBar(Graphics2D g, int barX, int barY, int barWidth, int barHeight)
     {
         final int maxPrayer = client.getRealSkillLevel(Skill.PRAYER);
         final int currentPrayer = client.getBoostedSkillLevel(Skill.PRAYER);
@@ -291,13 +291,13 @@ public class AdvancedHpBarOverlay extends Overlay
         final int prayerRestoreValue = getRestoreValue("Prayer");
 
         g.setColor(config.prayerBackgroundColor());
-        g.fillRect(barX, prayerBarY, barWidth, PRAYER_BAR_HEIGHT);
+        g.fillRect(barX, prayerBarY, barWidth, barHeight);
 
         if (maxPrayer > 0 && currentPrayer > 0)
         {
             final int prayerFillWidth = (int) Math.round(barWidth * ((double) currentPrayer / maxPrayer));
             g.setColor(config.prayerColor());
-            g.fillRect(barX, prayerBarY, prayerFillWidth, PRAYER_BAR_HEIGHT);
+            g.fillRect(barX, prayerBarY, prayerFillWidth, barHeight);
         }
 
         // Prayer restore preview starting where the prayer bar fill ends
@@ -309,7 +309,7 @@ public class AdvancedHpBarOverlay extends Overlay
             if (restoreWidth > 0)
             {
                 g.setColor(config.prayerRestoreColor());
-                g.fillRect(barX + restoreStart, prayerBarY, restoreWidth, PRAYER_BAR_HEIGHT);
+                g.fillRect(barX + restoreStart, prayerBarY, restoreWidth, barHeight);
             }
         }
     }

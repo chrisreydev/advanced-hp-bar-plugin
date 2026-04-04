@@ -251,4 +251,17 @@ public interface AdvancedHpBarConfig extends Config
     {
         return Color.BLACK;
     }
+
+    @Range(min = 1, max = 10)
+    @ConfigItem(
+            keyName = "prayerBarHeight",
+            name = "Prayer Bar Height",
+            description = "Height of the prayer bar",
+            section = prayerSection,
+            position = 4
+    )
+    default int prayerBarHeight()
+    {
+        return 3;
+    }
 }
