@@ -296,7 +296,7 @@ public class AdvancedHpBarOverlay extends Overlay
         if (maxPrayer > 0 && currentPrayer > 0)
         {
             final int prayerFillWidth = (int) Math.round(barWidth * ((double) currentPrayer / maxPrayer));
-            g.setColor(config.prayerColor());
+            g.setColor(getPrayerColor(currentPrayer));
             g.fillRect(barX, prayerBarY, prayerFillWidth, barHeight);
         }
 
@@ -317,5 +317,10 @@ public class AdvancedHpBarOverlay extends Overlay
     private Color getHpColor(int currentHp)
     {
         return currentHp < config.lowHpThreshold() ? config.lowHpColor() : config.hpColor();
+    }
+
+    private Color getPrayerColor(int currentPray)
+    {
+        return currentPray < config.lowPrayerThreshold() ? config.lowPrayerColor() : config.prayerColor();
     }
 }
