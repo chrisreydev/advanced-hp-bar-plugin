@@ -240,12 +240,38 @@ public interface AdvancedHpBarConfig extends Config
         return new Color(187, 187, 255, 255); // soft blue, semi-transparent
     }
 
+    @Alpha
+    @ConfigItem(
+            keyName = "lowPrayerThreshold",
+            name = "Low Prayer Threshold",
+            description = "Prayer value at which the bar switches to the low Prayer color. Set to 0 to disable",
+            section = prayerSection,
+            position = 3
+    )
+    default int lowPrayerThreshold()
+    {
+        return 0;
+    }
+
+    @Alpha
+    @ConfigItem(
+            keyName = "lowPrayerColor",
+            name = "Low Prayer Color",
+            description = "Color of the Prayer bar when Prayer drops below the low Prayer threshold",
+            section = prayerSection,
+            position = 4
+    )
+    default Color lowPrayerColor()
+    {
+        return new Color(244, 224, 102, 255);
+    }
+
     @ConfigItem(
             keyName = "prayerBackgroundColor",
             name = "Prayer Background Color",
             description = "Background color of the prayer bar",
             section = prayerSection,
-            position = 3
+            position = 5
     )
     default Color prayerBackgroundColor()
     {
@@ -258,7 +284,7 @@ public interface AdvancedHpBarConfig extends Config
             name = "Prayer Bar Height",
             description = "Height of the prayer bar",
             section = prayerSection,
-            position = 4
+            position = 6
     )
     default int prayerBarHeight()
     {
