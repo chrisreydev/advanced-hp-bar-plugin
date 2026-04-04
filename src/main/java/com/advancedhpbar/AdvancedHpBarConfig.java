@@ -227,12 +227,25 @@ public interface AdvancedHpBarConfig extends Config
         return Color.CYAN;
     }
 
+    @Alpha
+    @ConfigItem(
+            keyName = "prayerRestoreColor",
+            name = "Prayer restore preview color",
+            description = "Color shown for potential prayer restored by hovered item",
+            section = prayerSection,
+            position = 2
+    )
+    default Color prayerRestoreColor()
+    {
+        return new Color(180, 180, 255, 180); // soft blue, semi-transparent
+    }
+
     @ConfigItem(
             keyName = "prayerBackgroundColor",
             name = "Prayer Background Color",
             description = "Background color of the prayer bar",
             section = prayerSection,
-            position = 2
+            position = 3
     )
     default Color prayerBackgroundColor()
     {

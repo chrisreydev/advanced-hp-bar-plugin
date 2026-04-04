@@ -143,7 +143,6 @@ public class AdvancedHpBarOverlay extends Overlay
                     final int fillWidth = (int) Math.round(barWidth * ((double) currentHp / maxHp));
                     drawNormalSingleBox(g, barX, barY, fillWidth, currentHp);
 
-                    // Food heal preview for single bar mode
                     if (restoreValue > 0 && currentHp < maxHp)
                     {
                         final int healCap = Math.min(currentHp + restoreValue, maxHp);
@@ -230,11 +229,9 @@ public class AdvancedHpBarOverlay extends Overlay
             final int boxMaxHp = boxMinHp + boxCapacity;
             final int fill = Math.max(0, Math.min(currentHp - boxMinHp, boxCapacity));
 
-            // Draw damaged (empty) portion
             g.setColor(config.hpDamagedColor());
             g.fillRect(boxX, barY, thisBoxPixelWidth, BOX_HEIGHT);
 
-            // Draw green filled portion
             if (fill > 0)
             {
                 final int fillWidth = (int) Math.round(thisBoxPixelWidth * ((double) fill / boxCapacity));
@@ -242,7 +239,6 @@ public class AdvancedHpBarOverlay extends Overlay
                 g.fillRect(boxX, barY, fillWidth, BOX_HEIGHT);
             }
 
-            // Draw food-heal preview starting exactly where green ends
             if (restoreValue > 0 && healCap > currentHp)
             {
                 final int healStart = Math.max(currentHp, boxMinHp);
@@ -250,7 +246,7 @@ public class AdvancedHpBarOverlay extends Overlay
                 if (healEnd > healStart)
                 {
                     final int restoreStartPx = (int) Math.round(thisBoxPixelWidth * ((double)(healStart - boxMinHp) / boxCapacity));
-                    final int restoreEndPx = (int) Math.round(thisBoxPixelWidth * ((double)(healEnd   - boxMinHp) / boxCapacity));
+                    final int restoreEndPx = (int) Math.round(thisBoxPixelWidth * ((double)(healEnd - boxMinHp) / boxCapacity));
                     g.setColor(config.foodHealColor());
                     g.fillRect(boxX + restoreStartPx, barY, restoreEndPx - restoreStartPx, BOX_HEIGHT);
                 }
@@ -292,6 +288,7 @@ public class AdvancedHpBarOverlay extends Overlay
         final int maxPrayer = client.getRealSkillLevel(Skill.PRAYER);
         final int currentPrayer = client.getBoostedSkillLevel(Skill.PRAYER);
         final int prayerBarY = barY + BOX_HEIGHT + PRAYER_BAR_GAP;
+        final int prayerRestoreValue = getRestoreValue("Prayer");
 
         g.setColor(config.prayerBackgroundColor());
         g.fillRect(barX, prayerBarY, barWidth, PRAYER_BAR_HEIGHT);
@@ -301,6 +298,19 @@ public class AdvancedHpBarOverlay extends Overlay
             final int prayerFillWidth = (int) Math.round(barWidth * ((double) currentPrayer / maxPrayer));
             g.setColor(config.prayerColor());
             g.fillRect(barX, prayerBarY, prayerFillWidth, PRAYER_BAR_HEIGHT);
+        }
+
+        // Prayer restore preview starting where the prayer bar fill ends
+        if (prayerRestoreValue > 0 && currentPrayer < maxPrayer && maxPrayer > 0)
+        {
+            final int prayerHealCap = Math.min(currentPrayer + prayerRestoreValue, maxPrayer);
+            final int restoreStart = (int) Math.round(barWidth * ((double) currentPrayer / maxPrayer));
+            final int restoreWidth = (int) Math.round(barWidth * ((double) prayerHealCap / maxPrayer)) - restoreStart;
+            if (restoreWidth > 0)
+            {
+                g.setColor(config.prayerRestoreColor());
+                g.fillRect(barX + restoreStart, prayerBarY, restoreWidth, PRAYER_BAR_HEIGHT);
+            }
         }
     }
 
