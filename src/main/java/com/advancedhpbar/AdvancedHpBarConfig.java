@@ -140,23 +140,11 @@ public interface AdvancedHpBarConfig extends Config
     }
 
     @ConfigItem(
-            keyName = "hpBackgroundColor",
-            name = "HP Background Color",
-            description = "Background color behind the HP boxes",
-            section = hpSection,
-            position = 3
-    )
-    default Color hpBackgroundColor()
-    {
-        return Color.BLACK;
-    }
-
-    @ConfigItem(
             keyName = "lowHpThreshold",
             name = "Low HP Threshold",
             description = "HP value at which the bar switches to the low HP color. Set to 0 to disable",
             section = hpSection,
-            position = 4
+            position = 3
     )
     default int lowHpThreshold()
     {
@@ -168,7 +156,7 @@ public interface AdvancedHpBarConfig extends Config
             name = "Low HP Color",
             description = "Color of the HP bar when HP drops below the low HP threshold",
             section = hpSection,
-            position = 5
+            position = 4
     )
     default Color lowHpColor()
     {
@@ -180,7 +168,7 @@ public interface AdvancedHpBarConfig extends Config
             name = "Overheal Color",
             description = "Color of the HP bar portion above your base max HP",
             section = hpSection,
-            position = 6
+            position = 5
     )
     default Color overhealColor()
     {
@@ -193,11 +181,23 @@ public interface AdvancedHpBarConfig extends Config
             name = "Food heal preview color",
             description = "Color shown for potential HP restored by hovered food",
             section = hpSection,
-            position = 7
+            position = 6
     )
     default Color foodHealColor()
     {
         return new Color(228, 148, 148, 255);
+    }
+
+    @ConfigItem(
+            keyName = "hpBackgroundColor",
+            name = "HP Background Color",
+            description = "Background color behind the HP boxes",
+            section = hpSection,
+            position = 7
+    )
+    default Color hpBackgroundColor()
+    {
+        return Color.BLACK;
     }
     // -------------------------------------------------------------------------
     // Prayer Bar
