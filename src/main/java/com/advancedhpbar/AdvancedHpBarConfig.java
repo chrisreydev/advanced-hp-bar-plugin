@@ -175,6 +175,18 @@ public interface AdvancedHpBarConfig extends Config
         return Color.YELLOW;
     }
 
+    @ConfigItem(
+            keyName = "overhealColor",
+            name = "Overheal Color",
+            description = "Color of the HP bar portion above your base max HP",
+            section = hpSection,
+            position = 6
+    )
+    default Color overhealColor()
+    {
+        return Color.WHITE;
+    }
+
     // -------------------------------------------------------------------------
     // Prayer Bar
     // -------------------------------------------------------------------------
