@@ -2,13 +2,12 @@
 A customizable HP bar overlay for your local player, replacing the default HP bar with a segmented design that gives you more control over how your health and prayer are displayed.
 
 
-<img width="600" height="600" src="https://github.com/user-attachments/assets/a9cbea2f-337a-4a82-be41-d76af31e5f5f" />
-<img width="250" height="573" src="https://github.com/user-attachments/assets/e81870e3-c0fb-4ebf-8225-d84a94be5f87" />
+<img width="450" height="450" src="https://github.com/user-attachments/assets/a9cbea2f-337a-4a82-be41-d76af31e5f5f" />
+<img width="200"  src="https://github.com/user-attachments/assets/e81870e3-c0fb-4ebf-8225-d84a94be5f87" />
 
 
-<img width="280" height="280" src="https://github.com/user-attachments/assets/b2cd855f-6499-4070-bc39-2b800618a8cc" />
-<img width="280" height="280" src="https://github.com/user-attachments/assets/2a325d58-7865-40b7-afe2-3ce59a6197ae" />
-<img width="280" height="280" src="https://github.com/user-attachments/assets/7cbc6e74-8351-4360-b0ce-13e993a6dc46" />
+<img width="210" height="210" src="https://github.com/user-attachments/assets/b2cd855f-6499-4070-bc39-2b800618a8cc" />
+<img width="210" height="210" src="https://github.com/user-attachments/assets/7cbc6e74-8351-4360-b0ce-13e993a6dc46" />
 
 ---
 
@@ -19,6 +18,7 @@ A customizable HP bar overlay for your local player, replacing the default HP ba
 - **Damaged HP color** — the empty portion of each box is colored to indicate missing HP
 - **Food heal preview** — hovering a food item in your inventory highlights the portion of the bar that would be restored, starting exactly where your current HP ends
 - **Optional prayer bar** — a thin bar below the HP bar showing current prayer points as a proportion of max prayer
+- **Low prayer warning color** — the prayer bar switches to a separate color when prayer drops below a configurable threshold (disabled by default)
 - **Prayer restore preview** — hovering a prayer-restoring item in your inventory highlights the portion of the prayer bar that would be restored
 - **Always-on mode** — optionally show the bar at all times, even outside of combat
 - **Fully configurable colors** — every color in the overlay is customizable
@@ -57,7 +57,10 @@ Settings are grouped into three sections in the config panel:
 | Show Prayer Bar | Display a thin prayer bar below the HP bar | `true` |
 | Prayer Color | Color of the prayer points fill | Cyan |
 | Prayer Background Color | Background color of the prayer bar | Black |
+| Low Prayer Threshold | Prayer value at which the bar switches to the low prayer color. Set to `0` to disable | `0` |
+| Low Prayer Color | Color used when prayer drops below the threshold | Yellow |
 | Prayer Restore Preview Color | Color of the restore preview shown when hovering a prayer item in your inventory | Light Blue |
+| Prayer Bar Height | Height of the prayer bar in pixels | `3` |
 
 ---
 
@@ -70,4 +73,4 @@ Setting **HP Per Box** to `0` switches to a single full-width bar. If overhealed
 
 When hovering a food item in your inventory, a colored preview is drawn on the HP bar showing exactly how much HP would be restored — starting precisely where your current HP ends and capped at your maximum HP. The same applies to the prayer bar when hovering items that restore prayer points.
 
-The prayer bar renders as a single thin bar directly below the HP bar.
+The prayer bar renders as a single thin bar directly below the HP bar. When **Low Prayer Threshold** is set to a value above `0`, the prayer bar will switch to the **Low Prayer Color** once your prayer points drop to or below that value, mirroring the low HP warning behavior.
