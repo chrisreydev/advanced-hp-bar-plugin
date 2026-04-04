@@ -79,40 +79,143 @@ public class AdvancedHpBarOverlay extends Overlay
     {
         final int maxHp = client.getRealSkillLevel(Skill.HITPOINTS);
         final int currentHp = client.getBoostedSkillLevel(Skill.HITPOINTS);
-        final int numBoxes = (int) Math.ceil((double) maxHp / config.hpPerBox());
-        final int totalGaps = (numBoxes - 1) * BOX_GAP;
+        final int overheal = Math.max(0, currentHp - maxHp);
 
-        final int lastBoxCapacity = maxHp % config.hpPerBox() == 0 ? config.hpPerBox() : maxHp % config.hpPerBox();
-        final int numFullBoxes = lastBoxCapacity == config.hpPerBox() ? numBoxes : numBoxes - 1;
+        // When hpPerBox is 0, render a single full-width bar.
+        if (config.hpPerBox() == 0)
+        {
+            g.setColor(config.hpDamagedColor());
+            g.fillRect(barX, barY, barWidth, BOX_HEIGHT);
 
-        final double lastBoxRatio = (double) lastBoxCapacity / config.hpPerBox();
-        final double fullBoxWidth = (barWidth - totalGaps) / (numFullBoxes + lastBoxRatio);
-        final double lastBoxWidth = fullBoxWidth * lastBoxRatio;
+            if (maxHp > 0 && currentHp > 0)
+            {
+                if (overheal > 0)
+                {
+                    // Split proportionally: normal occupies (maxHp / currentHp) of the bar, overheal the rest
+                    final int normalBoxWidth = (int) Math.round(barWidth * ((double) maxHp / currentHp));
+                    final int overhealBoxWidth = barWidth - normalBoxWidth;
+                    drawNormalSingleBox(g, barX, barY, normalBoxWidth, currentHp);
+                    drawOverhealSingleBox(g, barX + normalBoxWidth, barY, overhealBoxWidth);
+                }
+                else
+                {
+                    final int fillWidth = (int) Math.round(barWidth * ((double) currentHp / maxHp));
+                    drawNormalSingleBox(g, barX, barY, fillWidth, currentHp);
+                }
+            }
+            return;
+        }
 
+        // --- Normal HP boxes ---
+        final int numNormalBoxes = (int) Math.ceil((double) maxHp / config.hpPerBox());
+        final int lastNormalBoxCapacity = maxHp % config.hpPerBox() == 0
+                ? config.hpPerBox()
+                : maxHp % config.hpPerBox();
+
+        // --- Overheal boxes ---
+        final int numOverhealBoxes = overheal > 0
+                ? (int) Math.ceil((double) overheal / config.hpPerBox())
+                : 0;
+        final int lastOverhealBoxCapacity = overheal > 0
+                ? (overheal % config.hpPerBox() == 0 ? config.hpPerBox() : overheal % config.hpPerBox())
+                : 0;
+
+        final int totalBoxes = numNormalBoxes + numOverhealBoxes;
+        final int totalGaps = (totalBoxes - 1) * BOX_GAP;
+
+        // The last box in each group may be narrower if HP doesn't divide evenly.
+        // This ratio drives how wide the last box is relative to a full box.
+        final double lastNormalRatio = (double) lastNormalBoxCapacity / config.hpPerBox();
+        final double lastOverhealRatio = numOverhealBoxes > 0
+                ? (double) lastOverhealBoxCapacity / config.hpPerBox()
+                : 0.0;
+
+        final double effectiveBoxCount = (numNormalBoxes - 1) + lastNormalRatio
+                + (numOverhealBoxes > 0 ? (numOverhealBoxes - 1) + lastOverhealRatio : 0.0);
+
+        if (effectiveBoxCount <= 0)
+        {
+            return;
+        }
+
+        final double fullBoxWidth = (barWidth - totalGaps) / effectiveBoxCount;
+
+        // Draw background across the full bar; gaps between boxes will show this color
         g.setColor(config.hpBackgroundColor());
         g.fillRect(barX, barY, barWidth, BOX_HEIGHT);
 
-        for (int i = 0; i < numBoxes; i++)
+        drawNormalBoxes(g, barX, barY, currentHp, maxHp, numNormalBoxes, lastNormalBoxCapacity, fullBoxWidth);
+        drawOverhealBoxes(g, barX, barY, overheal, numOverhealBoxes, lastOverhealBoxCapacity, lastNormalRatio, numNormalBoxes, fullBoxWidth);
+    }
+
+    private void drawNormalSingleBox(Graphics2D g, int boxX, int barY, int fillWidth, int currentHp)
+    {
+        g.setColor(getHpColor(currentHp));
+        g.fillRect(boxX, barY, fillWidth, BOX_HEIGHT);
+    }
+
+    private void drawOverhealSingleBox(Graphics2D g, int boxX, int barY, int fillWidth)
+    {
+        g.setColor(config.overhealColor());
+        g.fillRect(boxX, barY, fillWidth, BOX_HEIGHT);
+    }
+
+    private void drawNormalBoxes(Graphics2D g, int barX, int barY, int currentHp, int maxHp,
+                                 int numNormalBoxes, int lastNormalBoxCapacity, double fullBoxWidth)
+    {
+        for (int i = 0; i < numNormalBoxes; i++)
         {
-            final boolean isLastBox = (i == numBoxes - 1);
-            final int boxCapacity = isLastBox ? lastBoxCapacity : config.hpPerBox();
+            final boolean isLast = (i == numNormalBoxes - 1);
+            final int boxCapacity = isLast ? lastNormalBoxCapacity : config.hpPerBox();
+            final double boxRatio = (double) boxCapacity / config.hpPerBox();
 
             final double floatStart = barX + i * (fullBoxWidth + BOX_GAP);
-            final double floatEnd = floatStart + (isLastBox ? lastBoxWidth : fullBoxWidth);
+            final double floatEnd = floatStart + fullBoxWidth * boxRatio;
             final int boxX = (int) Math.round(floatStart);
-            final int boxEnd = (int) Math.round(floatEnd);
-            final int thisBoxPixelWidth = boxEnd - boxX;
+            final int thisBoxPixelWidth = (int) Math.round(floatEnd) - boxX;
 
             final int boxMinHp = i * config.hpPerBox();
-            final int thisBoxFill = Math.max(0, Math.min(currentHp - boxMinHp, boxCapacity));
-            final int fillWidth = (int) Math.round(thisBoxPixelWidth * ((double) thisBoxFill / boxCapacity));
+            final int fill = Math.max(0, Math.min(currentHp - boxMinHp, boxCapacity));
 
+            // Draw damaged (empty) portion
             g.setColor(config.hpDamagedColor());
             g.fillRect(boxX, barY, thisBoxPixelWidth, BOX_HEIGHT);
 
+            // Draw filled portion
+            if (fill > 0)
+            {
+                final int fillWidth = (int) Math.round(thisBoxPixelWidth * ((double) fill / boxCapacity));
+                g.setColor(getHpColor(currentHp));
+                g.fillRect(boxX, barY, fillWidth, BOX_HEIGHT);
+            }
+        }
+    }
+
+    private void drawOverhealBoxes(Graphics2D g, int barX, int barY, int overheal,
+                                   int numOverhealBoxes, int lastOverhealBoxCapacity,
+                                   double lastNormalRatio, int numNormalBoxes, double fullBoxWidth)
+    {
+        for (int i = 0; i < numOverhealBoxes; i++)
+        {
+            final boolean isLast = (i == numOverhealBoxes - 1);
+            final int boxCapacity = isLast ? lastOverhealBoxCapacity : config.hpPerBox();
+            final double boxRatio = (double) boxCapacity / config.hpPerBox();
+
+            // Offset past all normal boxes
+            final double normalWidth = (numNormalBoxes - 1) * (fullBoxWidth + BOX_GAP)
+                    + fullBoxWidth * lastNormalRatio + BOX_GAP;
+            final double floatStart = barX + normalWidth + i * (fullBoxWidth + BOX_GAP);
+            final double floatEnd = floatStart + fullBoxWidth * boxRatio;
+            final int boxX = (int) Math.round(floatStart);
+            final int thisBoxPixelWidth = (int) Math.round(floatEnd) - boxX;
+
+            final int boxMinOverheal = i * config.hpPerBox();
+            final int fill = Math.max(0, Math.min(overheal - boxMinOverheal, boxCapacity));
+            final int fillWidth = (int) Math.round(thisBoxPixelWidth * ((double) fill / boxCapacity));
+
             if (fillWidth > 0)
             {
-                g.setColor(getHpColor(currentHp));
+                g.setColor(config.overhealColor());
                 g.fillRect(boxX, barY, fillWidth, BOX_HEIGHT);
             }
         }
