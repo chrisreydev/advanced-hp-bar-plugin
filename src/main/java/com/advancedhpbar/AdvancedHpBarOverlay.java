@@ -1,11 +1,17 @@
 package com.advancedhpbar;
 
 import net.runelite.api.Client;
+import net.runelite.api.MenuEntry;
 import net.runelite.api.Perspective;
 import net.runelite.api.Player;
 import net.runelite.api.Skill;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.Point;
+import net.runelite.api.gameval.InterfaceID;
+import net.runelite.api.widgets.Widget;
+import net.runelite.client.plugins.itemstats.Effect;
+import net.runelite.client.plugins.itemstats.ItemStatChangesService;
+import net.runelite.client.plugins.itemstats.StatChange;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
@@ -24,12 +30,14 @@ public class AdvancedHpBarOverlay extends Overlay
 
     private final Client client;
     private final AdvancedHpBarConfig config;
+    private final ItemStatChangesService itemStatService;
 
     @Inject
-    public AdvancedHpBarOverlay(Client client, AdvancedHpBarConfig config)
+    public AdvancedHpBarOverlay(Client client, AdvancedHpBarConfig config, ItemStatChangesService itemstatservice)
     {
         this.client = client;
         this.config = config;
+        this.itemStatService = itemstatservice;
         setPosition(OverlayPosition.DYNAMIC);
         setLayer(OverlayLayer.ALWAYS_ON_TOP);
     }
@@ -75,13 +83,47 @@ public class AdvancedHpBarOverlay extends Overlay
         return null;
     }
 
+    private int getRestoreValue(String skill)
+    {
+        final MenuEntry[] menu = client.getMenu().getMenuEntries();
+        final int menuSize = menu.length;
+        if (menuSize == 0)
+        {
+            return 0;
+        }
+
+        final MenuEntry entry = menu[menuSize - 1];
+        final Widget widget = entry.getWidget();
+        int restoreValue = 0;
+
+        if (widget != null && widget.getId() == InterfaceID.Inventory.ITEMS)
+        {
+            final Effect change = itemStatService.getItemStatChanges(widget.getItemId());
+
+            if (change != null)
+            {
+                for (final StatChange c : change.calculate(client).getStatChanges())
+                {
+                    final int value = c.getTheoretical();
+
+                    if (value != 0 && c.getStat().getName().equals(skill))
+                    {
+                        restoreValue = value;
+                    }
+                }
+            }
+        }
+
+        return restoreValue;
+    }
+
     private void renderHpBar(Graphics2D g, int barX, int barY, int barWidth)
     {
         final int maxHp = client.getRealSkillLevel(Skill.HITPOINTS);
         final int currentHp = client.getBoostedSkillLevel(Skill.HITPOINTS);
         final int overheal = Math.max(0, currentHp - maxHp);
+        final int restoreValue = getRestoreValue("Hitpoints");
 
-        // When hpPerBox is 0, render a single full-width bar.
         if (config.hpPerBox() == 0)
         {
             g.setColor(config.hpDamagedColor());
@@ -91,7 +133,6 @@ public class AdvancedHpBarOverlay extends Overlay
             {
                 if (overheal > 0)
                 {
-                    // Split proportionally: normal occupies (maxHp / currentHp) of the bar, overheal the rest
                     final int normalBoxWidth = (int) Math.round(barWidth * ((double) maxHp / currentHp));
                     final int overhealBoxWidth = barWidth - normalBoxWidth;
                     drawNormalSingleBox(g, barX, barY, normalBoxWidth, currentHp);
@@ -101,18 +142,29 @@ public class AdvancedHpBarOverlay extends Overlay
                 {
                     final int fillWidth = (int) Math.round(barWidth * ((double) currentHp / maxHp));
                     drawNormalSingleBox(g, barX, barY, fillWidth, currentHp);
+
+                    // Food heal preview for single bar mode
+                    if (restoreValue > 0 && currentHp < maxHp)
+                    {
+                        final int healCap = Math.min(currentHp + restoreValue, maxHp);
+                        final int restoreStart = (int) Math.round(barWidth * ((double) currentHp / maxHp));
+                        final int restoreWidth = (int) Math.round(barWidth * ((double) healCap / maxHp)) - restoreStart;
+                        if (restoreWidth > 0)
+                        {
+                            g.setColor(config.foodHealColor());
+                            g.fillRect(barX + restoreStart, barY, restoreWidth, BOX_HEIGHT);
+                        }
+                    }
                 }
             }
             return;
         }
 
-        // --- Normal HP boxes ---
         final int numNormalBoxes = (int) Math.ceil((double) maxHp / config.hpPerBox());
         final int lastNormalBoxCapacity = maxHp % config.hpPerBox() == 0
                 ? config.hpPerBox()
                 : maxHp % config.hpPerBox();
 
-        // --- Overheal boxes ---
         final int numOverhealBoxes = overheal > 0
                 ? (int) Math.ceil((double) overheal / config.hpPerBox())
                 : 0;
@@ -123,8 +175,6 @@ public class AdvancedHpBarOverlay extends Overlay
         final int totalBoxes = numNormalBoxes + numOverhealBoxes;
         final int totalGaps = (totalBoxes - 1) * BOX_GAP;
 
-        // The last box in each group may be narrower if HP doesn't divide evenly.
-        // This ratio drives how wide the last box is relative to a full box.
         final double lastNormalRatio = (double) lastNormalBoxCapacity / config.hpPerBox();
         final double lastOverhealRatio = numOverhealBoxes > 0
                 ? (double) lastOverhealBoxCapacity / config.hpPerBox()
@@ -140,11 +190,10 @@ public class AdvancedHpBarOverlay extends Overlay
 
         final double fullBoxWidth = (barWidth - totalGaps) / effectiveBoxCount;
 
-        // Draw background across the full bar; gaps between boxes will show this color
         g.setColor(config.hpBackgroundColor());
         g.fillRect(barX, barY, barWidth, BOX_HEIGHT);
 
-        drawNormalBoxes(g, barX, barY, currentHp, maxHp, numNormalBoxes, lastNormalBoxCapacity, fullBoxWidth);
+        drawNormalBoxes(g, barX, barY, currentHp, maxHp, numNormalBoxes, lastNormalBoxCapacity, fullBoxWidth, restoreValue);
         drawOverhealBoxes(g, barX, barY, overheal, numOverhealBoxes, lastOverhealBoxCapacity, lastNormalRatio, numNormalBoxes, fullBoxWidth);
     }
 
@@ -161,8 +210,11 @@ public class AdvancedHpBarOverlay extends Overlay
     }
 
     private void drawNormalBoxes(Graphics2D g, int barX, int barY, int currentHp, int maxHp,
-                                 int numNormalBoxes, int lastNormalBoxCapacity, double fullBoxWidth)
+                                 int numNormalBoxes, int lastNormalBoxCapacity,
+                                 double fullBoxWidth, int restoreValue)
     {
+        final int healCap = Math.min(currentHp + restoreValue, maxHp);
+
         for (int i = 0; i < numNormalBoxes; i++)
         {
             final boolean isLast = (i == numNormalBoxes - 1);
@@ -175,18 +227,33 @@ public class AdvancedHpBarOverlay extends Overlay
             final int thisBoxPixelWidth = (int) Math.round(floatEnd) - boxX;
 
             final int boxMinHp = i * config.hpPerBox();
+            final int boxMaxHp = boxMinHp + boxCapacity;
             final int fill = Math.max(0, Math.min(currentHp - boxMinHp, boxCapacity));
 
             // Draw damaged (empty) portion
             g.setColor(config.hpDamagedColor());
             g.fillRect(boxX, barY, thisBoxPixelWidth, BOX_HEIGHT);
 
-            // Draw filled portion
+            // Draw green filled portion
             if (fill > 0)
             {
                 final int fillWidth = (int) Math.round(thisBoxPixelWidth * ((double) fill / boxCapacity));
                 g.setColor(getHpColor(currentHp));
                 g.fillRect(boxX, barY, fillWidth, BOX_HEIGHT);
+            }
+
+            // Draw food-heal preview starting exactly where green ends
+            if (restoreValue > 0 && healCap > currentHp)
+            {
+                final int healStart = Math.max(currentHp, boxMinHp);
+                final int healEnd = Math.min(healCap, boxMaxHp);
+                if (healEnd > healStart)
+                {
+                    final int restoreStartPx = (int) Math.round(thisBoxPixelWidth * ((double)(healStart - boxMinHp) / boxCapacity));
+                    final int restoreEndPx = (int) Math.round(thisBoxPixelWidth * ((double)(healEnd   - boxMinHp) / boxCapacity));
+                    g.setColor(config.foodHealColor());
+                    g.fillRect(boxX + restoreStartPx, barY, restoreEndPx - restoreStartPx, BOX_HEIGHT);
+                }
             }
         }
     }
@@ -201,7 +268,6 @@ public class AdvancedHpBarOverlay extends Overlay
             final int boxCapacity = isLast ? lastOverhealBoxCapacity : config.hpPerBox();
             final double boxRatio = (double) boxCapacity / config.hpPerBox();
 
-            // Offset past all normal boxes
             final double normalWidth = (numNormalBoxes - 1) * (fullBoxWidth + BOX_GAP)
                     + fullBoxWidth * lastNormalRatio + BOX_GAP;
             final double floatStart = barX + normalWidth + i * (fullBoxWidth + BOX_GAP);

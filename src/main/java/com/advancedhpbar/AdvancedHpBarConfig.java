@@ -187,6 +187,18 @@ public interface AdvancedHpBarConfig extends Config
         return Color.WHITE;
     }
 
+    @Alpha
+    @ConfigItem(
+            keyName = "foodHealColor",
+            name = "Food heal preview color",
+            description = "Color shown for potential HP restored by hovered food",
+            section = hpSection,
+            position = 7
+    )
+    default Color foodHealColor()
+    {
+        return new Color(255, 185, 197, 255);
+    }
     // -------------------------------------------------------------------------
     // Prayer Bar
     // -------------------------------------------------------------------------
