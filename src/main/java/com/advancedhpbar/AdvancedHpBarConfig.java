@@ -187,6 +187,18 @@ public interface AdvancedHpBarConfig extends Config
         return Color.WHITE;
     }
 
+    @Alpha
+    @ConfigItem(
+            keyName = "foodHealColor",
+            name = "Food heal preview color",
+            description = "Color shown for potential HP restored by hovered food",
+            section = hpSection,
+            position = 7
+    )
+    default Color foodHealColor()
+    {
+        return new Color(228, 148, 148, 255);
+    }
     // -------------------------------------------------------------------------
     // Prayer Bar
     // -------------------------------------------------------------------------
@@ -215,12 +227,25 @@ public interface AdvancedHpBarConfig extends Config
         return Color.CYAN;
     }
 
+    @Alpha
+    @ConfigItem(
+            keyName = "prayerRestoreColor",
+            name = "Prayer restore preview color",
+            description = "Color shown for potential prayer restored by hovered item",
+            section = prayerSection,
+            position = 2
+    )
+    default Color prayerRestoreColor()
+    {
+        return new Color(187, 187, 255, 255); // soft blue, semi-transparent
+    }
+
     @ConfigItem(
             keyName = "prayerBackgroundColor",
             name = "Prayer Background Color",
             description = "Background color of the prayer bar",
             section = prayerSection,
-            position = 2
+            position = 3
     )
     default Color prayerBackgroundColor()
     {

@@ -6,13 +6,16 @@ import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.plugins.Plugin;
+import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
+import net.runelite.client.plugins.itemstats.ItemStatPlugin;
 
 @Slf4j
 @PluginDescriptor(
         name = "Advanced Hp Bar"
 )
+@PluginDependency(ItemStatPlugin.class)
 public class AdvancedHpBarPlugin extends Plugin
 {
     @Inject
