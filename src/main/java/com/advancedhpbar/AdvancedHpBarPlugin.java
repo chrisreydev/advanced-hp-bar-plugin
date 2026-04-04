@@ -4,7 +4,9 @@ import com.google.inject.Provides;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
+import net.runelite.api.events.GameTick;
 import net.runelite.client.config.ConfigManager;
+import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
@@ -30,10 +32,13 @@ public class AdvancedHpBarPlugin extends Plugin
     @Inject
     private AdvancedHpBarOverlay overlay;
 
+    private long lastTickTime;
+
     @Override
     protected void startUp()
     {
         log.info("Advanced HP Bar started!");
+        lastTickTime = System.currentTimeMillis();
         overlayManager.add(overlay);
     }
 
@@ -42,6 +47,17 @@ public class AdvancedHpBarPlugin extends Plugin
     {
         log.info("Advanced HP Bar stopped!");
         overlayManager.remove(overlay);
+    }
+
+    @Subscribe
+    public void onGameTick(GameTick tick)
+    {
+        lastTickTime = System.currentTimeMillis();
+    }
+
+    long millisSinceTick()
+    {
+        return System.currentTimeMillis() - lastTickTime;
     }
 
     @Provides

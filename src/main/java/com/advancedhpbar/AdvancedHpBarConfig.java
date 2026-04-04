@@ -290,4 +290,28 @@ public interface AdvancedHpBarConfig extends Config
     {
         return 3;
     }
+
+    @ConfigItem(
+            keyName = "prayerFlickOn",
+            name = "Prayer Flick Helper",
+            description = "Display a Prayer Flicker Helper",
+            section = prayerSection,
+            position = 7
+    )
+    default boolean prayerFlickOn()
+    {
+        return false;
+    }
+
+    @ConfigItem(
+            keyName = "prayerFlickColor",
+            name = "Prayer Flick Color",
+            description = "Color for Player Flick Helper",
+            section = prayerSection,
+            position = 8
+    )
+    default Color prayerFlickColor()
+    {
+        return Color.BLACK;
+    }
 }
