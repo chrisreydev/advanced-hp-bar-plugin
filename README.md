@@ -3,10 +3,13 @@ A customizable HP bar overlay for your local player, replacing the default HP ba
 
 
 
-<img width="350" src="https://github.com/user-attachments/assets/17a46bfc-0ccf-4b27-aa2f-5ef5cf2d56ed" />
-<img width="350" src="https://github.com/user-attachments/assets/eae63fbc-844f-4f5e-9870-1f201421f55e" />
-<img width="290" src="https://github.com/user-attachments/assets/3c75fd20-142e-45d2-ae66-9b53570de6a5" />
-<img width="231" height="711" alt="Screenshot 2026-04-04 at 2 09 52 PM" src="https://github.com/user-attachments/assets/e19b367c-61a1-4839-b32a-3661d308f4d3" />
+<img width="250" src="https://github.com/user-attachments/assets/17a46bfc-0ccf-4b27-aa2f-5ef5cf2d56ed" />
+<img width="250" src="https://github.com/user-attachments/assets/eae63fbc-844f-4f5e-9870-1f201421f55e" />
+<img width="210" src="https://github.com/user-attachments/assets/3c75fd20-142e-45d2-ae66-9b53570de6a5" />
+
+<img width="224" height="175" alt="Screenshot 2026-04-04 at 2 16 01 PM" src="https://github.com/user-attachments/assets/c500b53e-9054-4114-87b0-b8f8f71c7710" />
+<img width="227" height="249" alt="Screenshot 2026-04-04 at 2 16 16 PM" src="https://github.com/user-attachments/assets/48d86c90-8a92-4280-b890-68562e6462f5" />
+<img width="229" height="281" alt="Screenshot 2026-04-04 at 2 16 27 PM" src="https://github.com/user-attachments/assets/da5acfbb-f4aa-4328-ad61-7e4b31b8d651" />
 
 
 ---
