@@ -64,7 +64,7 @@ public class AdvancedHpBarOverlay extends Overlay
                 client,
                 localLocation,
                 client.getTopLevelWorldView().getPlane(),
-                localPlayer.getLogicalHeight() + config.zOffset()
+                localPlayer.getLogicalHeight() + config.zOffset() + 23
         );
 
         if (canvasPoint == null)
@@ -72,8 +72,8 @@ public class AdvancedHpBarOverlay extends Overlay
             return null;
         }
 
-        final int barX = canvasPoint.getX() + config.barXOffset();
-        final int barY = canvasPoint.getY() + config.barHeightOffset();
+        final int barX = canvasPoint.getX() + config.barXOffset() - 31;
+        final int barY = canvasPoint.getY() + config.barHeightOffset() - 3;
         final int barWidth = config.barWidth();
         final int prayerBarHeight = config.prayerBarHeight();
 

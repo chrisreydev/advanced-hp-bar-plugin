@@ -67,10 +67,10 @@ public interface AdvancedHpBarConfig extends Config
             section = generalSection,
             position = 2
     )
-    @Range(min = -50, max = 50)
+    @Range(min = -5000, max = 5000)
     default int zOffset()
     {
-        return 23;
+        return 0;
     }
 
     @ConfigItem(
@@ -83,7 +83,7 @@ public interface AdvancedHpBarConfig extends Config
     @Range(min = -500, max = 500)
     default int barHeightOffset()
     {
-        return -3;
+        return 0;
     }
 
     @ConfigItem(
@@ -96,7 +96,7 @@ public interface AdvancedHpBarConfig extends Config
     @Range(min = -500, max = 500)
     default int barXOffset()
     {
-        return -28;
+        return 0;
     }
 
     // -------------------------------------------------------------------------
@@ -312,6 +312,6 @@ public interface AdvancedHpBarConfig extends Config
     )
     default Color prayerFlickColor()
     {
-        return Color.BLACK;
+        return new Color(255, 125, 0, 255);
     }
 }
