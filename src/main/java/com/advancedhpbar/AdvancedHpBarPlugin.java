@@ -67,6 +67,7 @@ public class AdvancedHpBarPlugin extends Plugin
             spriteManager.removeSpriteOverrides(BlankHealthBarOverride.values());
             client.resetHealthBarCaches();
         });
+        clientThread.invokeLater(client::resetHealthBarCaches);
     }
 
     @Subscribe
