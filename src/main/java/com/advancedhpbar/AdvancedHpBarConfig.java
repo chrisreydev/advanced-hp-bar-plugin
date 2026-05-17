@@ -31,6 +31,13 @@ public interface AdvancedHpBarConfig extends Config
     )
     String prayerSection = "prayer";
 
+    @ConfigSection(
+            name = "NPC HP Bar",
+            description = "Redrawn NPC health bar settings",
+            position = 3
+    )
+    String npcSection = "npc";
+
     // -------------------------------------------------------------------------
     // General
     // -------------------------------------------------------------------------
@@ -326,5 +333,97 @@ public interface AdvancedHpBarConfig extends Config
     default Color prayerFlickColor()
     {
         return new Color(255, 125, 0, 255);
+    }
+
+    // -------------------------------------------------------------------------
+    // NPC HP Bar
+    // -------------------------------------------------------------------------
+    @ConfigItem(
+            keyName = "npcBarWidth",
+            name = "NPC Bar Width",
+            description = "Width of the NPC health bar in pixels",
+            section = npcSection,
+            position = 1
+    )
+    @Range(min = 10, max = 300)
+    default int npcBarWidth()
+    {
+        return 30;
+    }
+
+    @ConfigItem(
+            keyName = "npcBarHeight",
+            name = "NPC Bar Height",
+            description = "Height of the NPC health bar in pixels",
+            section = npcSection,
+            position = 2
+    )
+    @Range(min = 1, max = 30)
+    default int npcBarHeight()
+    {
+        return 5;
+    }
+
+    @ConfigItem(
+            keyName = "npcBarZOffset",
+            name = "NPC Z Offset",
+            description = "Z offset added to the NPC's logical height for vertical alignment",
+            section = npcSection,
+            position = 3
+    )
+    @Range(min = -5000, max = 5000)
+    default int npcBarZOffset()
+    {
+        return 0;
+    }
+
+    @ConfigItem(
+            keyName = "npcBarXOffset",
+            name = "NPC Horizontal Offset",
+            description = "Horizontal pixel offset of the NPC bar after projection",
+            section = npcSection,
+            position = 4
+    )
+    @Range(min = -500, max = 500)
+    default int npcBarXOffset()
+    {
+        return 0;
+    }
+
+    @ConfigItem(
+            keyName = "npcBarYOffset",
+            name = "NPC Vertical Offset",
+            description = "Vertical pixel offset of the NPC bar after projection",
+            section = npcSection,
+            position = 5
+    )
+    @Range(min = -500, max = 500)
+    default int npcBarYOffset()
+    {
+        return 0;
+    }
+
+    @ConfigItem(
+            keyName = "npcHpColor",
+            name = "NPC HP Color",
+            description = "Color of the NPC health fill",
+            section = npcSection,
+            position = 6
+    )
+    default Color npcHpColor()
+    {
+        return Color.GREEN;
+    }
+
+    @ConfigItem(
+            keyName = "npcHpDamagedColor",
+            name = "NPC HP Damaged Color",
+            description = "Color shown for the damaged (missing) portion of NPC HP",
+            section = npcSection,
+            position = 7
+    )
+    default Color npcHpDamagedColor()
+    {
+        return Color.RED;
     }
 }

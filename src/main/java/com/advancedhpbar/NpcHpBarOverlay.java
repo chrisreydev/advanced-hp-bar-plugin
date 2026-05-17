@@ -1,6 +1,5 @@
 package com.advancedhpbar;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import javax.inject.Inject;
@@ -16,28 +15,20 @@ import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 
 /**
- * Redraws NPC healthbars after the vanilla ones have been blanked by
- * {@link BlankHealthBarOverride}.
- * The local player is intentionally skipped as we are drawing the advanced hp bar
+ * Redraws NPC healthbars after the vanilla ones have been blanked
+ * The local player is intentionally skipped so the main overlay owns
+ * the player's bar.
  */
 public class NpcHpBarOverlay extends Overlay
 {
-    private static final int BAR_WIDTH = 30;
-    private static final int BAR_HEIGHT = 5;
-
-    private static final int BAR_Z_OFFSET = 25;
-    private static final int BAR_X_OFFSET = -(BAR_WIDTH / 2);
-    private static final int BAR_Y_OFFSET = 0;
-
-    private static final Color BAR_HEALTH = Color.GREEN;   // green
-    private static final Color BAR_DAMAGE = Color.RED;  // dark red
-
     private final Client client;
+    private final AdvancedHpBarConfig config;
 
     @Inject
-    public NpcHpBarOverlay(Client client)
+    public NpcHpBarOverlay(Client client, AdvancedHpBarConfig config)
     {
         this.client = client;
+        this.config = config;
         setPosition(OverlayPosition.DYNAMIC);
         setLayer(OverlayLayer.ABOVE_SCENE);
     }
@@ -56,7 +47,6 @@ public class NpcHpBarOverlay extends Overlay
 
             if (isLocalPlayer(npc, localPlayer))
             {
-                // skip if local player. We are rendering our Advanced HP Bar
                 continue;
             }
 
@@ -91,7 +81,7 @@ public class NpcHpBarOverlay extends Overlay
                 client,
                 lp,
                 client.getTopLevelWorldView().getPlane(),
-                npc.getLogicalHeight() + BAR_Z_OFFSET
+                npc.getLogicalHeight() + config.npcBarZOffset() + 23
         );
 
         if (canvasPoint == null)
@@ -99,20 +89,23 @@ public class NpcHpBarOverlay extends Overlay
             return;
         }
 
-        final int x = canvasPoint.getX() + BAR_X_OFFSET;
-        final int y = canvasPoint.getY() + BAR_Y_OFFSET;
+        final int barWidth = config.npcBarWidth();
+        final int barHeight = config.npcBarHeight();
+
+        final int x = canvasPoint.getX() + config.npcBarXOffset() - (barWidth / 2);
+        final int y = canvasPoint.getY() + config.npcBarYOffset() + 4;
 
         final double fraction = Math.max(0.0, Math.min(1.0,
                 (double) healthRatio / (double) healthScale));
-        final int fillWidth = (int) Math.round(BAR_WIDTH * fraction);
+        final int fillWidth = (int) Math.round(barWidth * fraction);
 
-        g.setColor(BAR_DAMAGE);
-        g.fillRect(x, y, BAR_WIDTH, BAR_HEIGHT);
+        g.setColor(config.npcHpDamagedColor());
+        g.fillRect(x, y, barWidth, barHeight);
 
         if (fillWidth > 0)
         {
-            g.setColor(BAR_HEALTH);
-            g.fillRect(x, y, fillWidth, BAR_HEIGHT);
+            g.setColor(config.npcHpColor());
+            g.fillRect(x, y, fillWidth, barHeight);
         }
     }
 }
