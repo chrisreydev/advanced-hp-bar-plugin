@@ -24,7 +24,6 @@ import java.awt.Graphics2D;
 public class AdvancedHpBarOverlay extends Overlay
 {
     private static final int BOX_GAP = 1;
-    private static final int BOX_HEIGHT = 5;
     private static final int PRAYER_BAR_GAP = 1;
     private static final int GAP_FILLER = PRAYER_BAR_GAP;
     private static final int TICK_LENGTH = 600;
@@ -74,7 +73,7 @@ public class AdvancedHpBarOverlay extends Overlay
         }
 
         final int barX = canvasPoint.getX() + config.barXOffset() - 31;
-        final int barY = canvasPoint.getY() + config.barHeightOffset() - 3;
+        final int barY = canvasPoint.getY() + config.barHeightOffset() - 4;
         final int barWidth = config.barWidth();
         final int prayerBarHeight = config.prayerBarHeight();
 
@@ -124,6 +123,7 @@ public class AdvancedHpBarOverlay extends Overlay
 
     private void renderHpBar(Graphics2D g, int barX, int barY, int barWidth)
     {
+        final int hpBarHeight = config.hpBarHeight();
         final int maxHp = client.getRealSkillLevel(Skill.HITPOINTS);
         final int currentHp = client.getBoostedSkillLevel(Skill.HITPOINTS);
         final int overheal = Math.max(0, currentHp - maxHp);
@@ -132,7 +132,7 @@ public class AdvancedHpBarOverlay extends Overlay
         if (config.hpPerBox() == 0)
         {
             g.setColor(config.hpDamagedColor());
-            g.fillRect(barX, barY, barWidth, BOX_HEIGHT);
+            g.fillRect(barX, barY, barWidth, hpBarHeight);
 
             if (maxHp > 0 && currentHp > 0)
             {
@@ -156,7 +156,7 @@ public class AdvancedHpBarOverlay extends Overlay
                         if (restoreWidth > 0)
                         {
                             g.setColor(config.foodHealColor());
-                            g.fillRect(barX + restoreStart, barY, restoreWidth, BOX_HEIGHT);
+                            g.fillRect(barX + restoreStart, barY, restoreWidth, hpBarHeight);
                         }
                     }
                 }
@@ -195,7 +195,7 @@ public class AdvancedHpBarOverlay extends Overlay
         final double fullBoxWidth = (barWidth - totalGaps) / effectiveBoxCount;
 
         g.setColor(config.hpBackgroundColor());
-        g.fillRect(barX, barY, barWidth, BOX_HEIGHT);
+        g.fillRect(barX, barY, barWidth, hpBarHeight);
 
         drawNormalBoxes(g, barX, barY, currentHp, maxHp, numNormalBoxes, lastNormalBoxCapacity, fullBoxWidth, restoreValue);
         drawOverhealBoxes(g, barX, barY, overheal, numOverhealBoxes, lastOverhealBoxCapacity, lastNormalRatio, numNormalBoxes, fullBoxWidth);
@@ -204,19 +204,20 @@ public class AdvancedHpBarOverlay extends Overlay
     private void drawNormalSingleBox(Graphics2D g, int boxX, int barY, int fillWidth, int currentHp)
     {
         g.setColor(getHpColor(currentHp));
-        g.fillRect(boxX, barY, fillWidth, BOX_HEIGHT);
+        g.fillRect(boxX, barY, fillWidth, config.hpBarHeight());
     }
 
     private void drawOverhealSingleBox(Graphics2D g, int boxX, int barY, int fillWidth)
     {
         g.setColor(config.overhealColor());
-        g.fillRect(boxX, barY, fillWidth, BOX_HEIGHT);
+        g.fillRect(boxX, barY, fillWidth, config.hpBarHeight());
     }
 
     private void drawNormalBoxes(Graphics2D g, int barX, int barY, int currentHp, int maxHp,
                                  int numNormalBoxes, int lastNormalBoxCapacity,
                                  double fullBoxWidth, int restoreValue)
     {
+        final int hpBarHeight = config.hpBarHeight();
         final int healCap = Math.min(currentHp + restoreValue, maxHp);
 
         for (int i = 0; i < numNormalBoxes; i++)
@@ -235,13 +236,13 @@ public class AdvancedHpBarOverlay extends Overlay
             final int fill = Math.max(0, Math.min(currentHp - boxMinHp, boxCapacity));
 
             g.setColor(config.hpDamagedColor());
-            g.fillRect(boxX, barY, thisBoxPixelWidth, BOX_HEIGHT);
+            g.fillRect(boxX, barY, thisBoxPixelWidth, hpBarHeight);
 
             if (fill > 0)
             {
                 final int fillWidth = (int) Math.round(thisBoxPixelWidth * ((double) fill / boxCapacity));
                 g.setColor(getHpColor(currentHp));
-                g.fillRect(boxX, barY, fillWidth, BOX_HEIGHT);
+                g.fillRect(boxX, barY, fillWidth, hpBarHeight);
             }
 
             if (restoreValue > 0 && healCap > currentHp)
@@ -253,7 +254,7 @@ public class AdvancedHpBarOverlay extends Overlay
                     final int restoreStartPx = (int) Math.round(thisBoxPixelWidth * ((double)(healStart - boxMinHp) / boxCapacity));
                     final int restoreEndPx = (int) Math.round(thisBoxPixelWidth * ((double)(healEnd - boxMinHp) / boxCapacity));
                     g.setColor(config.foodHealColor());
-                    g.fillRect(boxX + restoreStartPx, barY, restoreEndPx - restoreStartPx, BOX_HEIGHT);
+                    g.fillRect(boxX + restoreStartPx, barY, restoreEndPx - restoreStartPx, hpBarHeight);
                 }
             }
         }
@@ -263,6 +264,8 @@ public class AdvancedHpBarOverlay extends Overlay
                                    int numOverhealBoxes, int lastOverhealBoxCapacity,
                                    double lastNormalRatio, int numNormalBoxes, double fullBoxWidth)
     {
+        final int hpBarHeight = config.hpBarHeight();
+
         for (int i = 0; i < numOverhealBoxes; i++)
         {
             final boolean isLast = (i == numOverhealBoxes - 1);
@@ -283,17 +286,18 @@ public class AdvancedHpBarOverlay extends Overlay
             if (fillWidth > 0)
             {
                 g.setColor(config.overhealColor());
-                g.fillRect(boxX, barY, fillWidth, BOX_HEIGHT);
+                g.fillRect(boxX, barY, fillWidth, hpBarHeight);
             }
         }
     }
 
     private void renderPrayerBar(Graphics2D g, int barX, int barY, int barWidth, int barHeight)
     {
+        final int hpBarHeight = config.hpBarHeight();
         final int maxPrayer = client.getRealSkillLevel(Skill.PRAYER);
         final int currentPrayer = client.getBoostedSkillLevel(Skill.PRAYER);
-        final int prayerBarY = barY + BOX_HEIGHT + PRAYER_BAR_GAP;
-        final int barFillerY = barY + BOX_HEIGHT;
+        final int prayerBarY = barY + hpBarHeight + PRAYER_BAR_GAP;
+        final int barFillerY = barY + hpBarHeight;
         final int prayerRestoreValue = getRestoreValue("Prayer");
 
         g.setColor(Color.BLACK);
