@@ -43,22 +43,25 @@ public class AdvancedHpBarPlugin extends Plugin
     @Inject
     private ClientThread clientThread;
 
+    @Inject
+    private NpcHpBarOverlay npcHpBarOverlay;
+
     private long lastTickTime;
 
     @Override
     protected void startUp()
     {
-        log.info("Advanced HP Bar started!");
         lastTickTime = System.currentTimeMillis();
         overlayManager.add(overlay);
         clientThread.invoke(this::applyHealthBarOverrides);
+        overlayManager.add(npcHpBarOverlay);
     }
 
     @Override
     protected void shutDown()
     {
-        log.info("Advanced HP Bar stopped!");
         overlayManager.remove(overlay);
+        overlayManager.remove(npcHpBarOverlay);
         clientThread.invoke(() ->
         {
             spriteManager.removeSpriteOverrides(BlankHealthBarOverride.values());
@@ -69,8 +72,6 @@ public class AdvancedHpBarPlugin extends Plugin
     @Subscribe
     public void onGameStateChanged(GameStateChanged gameStateChanged)
     {
-        // Re-apply overrides once the client is past the login screen,
-        // since the sprite cache is not set up until then.
         if (gameStateChanged.getGameState() == GameState.STARTING)
         {
             clientThread.invoke(this::applyHealthBarOverrides);
@@ -79,13 +80,11 @@ public class AdvancedHpBarPlugin extends Plugin
 
     private boolean applyHealthBarOverrides()
     {
-        // Sprite cache is not available until the login screen.
         if (client.getGameState().getState() < GameState.LOGIN_SCREEN.getState())
         {
             return false;
         }
 
-        // --- DEBUG: verify the blank.png resource actually resolves ---
         String fileName = BlankHealthBarOverride.values()[0].getFileName();
         try (InputStream in = BlankHealthBarOverride.class.getResourceAsStream(fileName))
         {
@@ -107,7 +106,6 @@ public class AdvancedHpBarPlugin extends Plugin
         {
             log.warn("[AdvancedHpBar] error while checking blank.png resource", ex);
         }
-        // --- END DEBUG ---
 
         spriteManager.addSpriteOverrides(BlankHealthBarOverride.values());
         client.resetHealthBarCaches();
