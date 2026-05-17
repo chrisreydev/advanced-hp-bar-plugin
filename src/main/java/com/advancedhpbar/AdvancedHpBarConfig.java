@@ -199,6 +199,19 @@ public interface AdvancedHpBarConfig extends Config
     {
         return Color.BLACK;
     }
+
+    @Range(min = 5, max = 30)
+    @ConfigItem(
+            keyName = "hpBarHeight",
+            name = "HP bar height",
+            description = "Height of the HP bar in pixels",
+            section = hpSection,
+            position = 8
+    )
+    default int hpBarHeight()
+    {
+        return 6;
+    }
     // -------------------------------------------------------------------------
     // Prayer Bar
     // -------------------------------------------------------------------------
