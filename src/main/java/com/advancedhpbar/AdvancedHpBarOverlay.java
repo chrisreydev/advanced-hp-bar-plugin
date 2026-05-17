@@ -26,6 +26,7 @@ public class AdvancedHpBarOverlay extends Overlay
     private static final int BOX_GAP = 1;
     private static final int BOX_HEIGHT = 5;
     private static final int PRAYER_BAR_GAP = 1;
+    private static final int GAP_FILLER = PRAYER_BAR_GAP;
     private static final int TICK_LENGTH = 600;
     private static final int SWIPE_LINE_WIDTH = 3;
 
@@ -292,7 +293,11 @@ public class AdvancedHpBarOverlay extends Overlay
         final int maxPrayer = client.getRealSkillLevel(Skill.PRAYER);
         final int currentPrayer = client.getBoostedSkillLevel(Skill.PRAYER);
         final int prayerBarY = barY + BOX_HEIGHT + PRAYER_BAR_GAP;
+        final int barFillerY = barY + BOX_HEIGHT;
         final int prayerRestoreValue = getRestoreValue("Prayer");
+
+        g.setColor(Color.BLACK);
+        g.fillRect(barX, barFillerY, barWidth, GAP_FILLER);
 
         g.setColor(config.prayerBackgroundColor());
         g.fillRect(barX, prayerBarY, barWidth, barHeight);
