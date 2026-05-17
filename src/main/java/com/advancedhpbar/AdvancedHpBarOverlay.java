@@ -73,7 +73,7 @@ public class AdvancedHpBarOverlay extends Overlay
         }
 
         final int barX = canvasPoint.getX() + config.barXOffset() - 31;
-        final int barY = canvasPoint.getY() + config.barHeightOffset() - 4;
+        final int barY = canvasPoint.getY() + config.barHeightOffset() - 14;
         final int barWidth = config.barWidth();
         final int prayerBarHeight = config.prayerBarHeight();
 

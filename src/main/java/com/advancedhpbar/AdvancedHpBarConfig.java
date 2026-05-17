@@ -207,7 +207,7 @@ public interface AdvancedHpBarConfig extends Config
         return Color.BLACK;
     }
 
-    @Range(min = 5, max = 30)
+    @Range(min = 1, max = 30)
     @ConfigItem(
             keyName = "hpBarHeight",
             name = "HP bar height",
@@ -217,7 +217,7 @@ public interface AdvancedHpBarConfig extends Config
     )
     default int hpBarHeight()
     {
-        return 6;
+        return 5;
     }
     // -------------------------------------------------------------------------
     // Prayer Bar
