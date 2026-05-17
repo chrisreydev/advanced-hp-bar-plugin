@@ -236,11 +236,23 @@ public interface AdvancedHpBarConfig extends Config
     }
 
     @ConfigItem(
+            keyName = "showPrayerBarWhenActive",
+            name = "Show Prayer Bar When Active",
+            description = "Show the prayer bar whenever a prayer is active, even when out of combat",
+            section = prayerSection,
+            position = 1
+    )
+    default boolean showPrayerBarWhenActive()
+    {
+        return true;
+    }
+
+    @ConfigItem(
             keyName = "prayerColor",
             name = "Prayer Color",
             description = "Color of the prayer points fill",
             section = prayerSection,
-            position = 1
+            position = 2
     )
     default Color prayerColor()
     {
@@ -253,7 +265,7 @@ public interface AdvancedHpBarConfig extends Config
             name = "Prayer restore preview color",
             description = "Color shown for potential prayer restored by hovered item",
             section = prayerSection,
-            position = 2
+            position = 3
     )
     default Color prayerRestoreColor()
     {
@@ -266,7 +278,7 @@ public interface AdvancedHpBarConfig extends Config
             name = "Low Prayer Threshold",
             description = "Prayer value at which the bar switches to the low Prayer color. Set to 0 to disable",
             section = prayerSection,
-            position = 3
+            position = 4
     )
     default int lowPrayerThreshold()
     {
@@ -279,7 +291,7 @@ public interface AdvancedHpBarConfig extends Config
             name = "Low Prayer Color",
             description = "Color of the Prayer bar when Prayer drops below the low Prayer threshold",
             section = prayerSection,
-            position = 4
+            position = 5
     )
     default Color lowPrayerColor()
     {
@@ -291,7 +303,7 @@ public interface AdvancedHpBarConfig extends Config
             name = "Prayer Background Color",
             description = "Background color of the prayer bar",
             section = prayerSection,
-            position = 5
+            position = 6
     )
     default Color prayerBackgroundColor()
     {
@@ -304,7 +316,7 @@ public interface AdvancedHpBarConfig extends Config
             name = "Prayer Bar Height",
             description = "Height of the prayer bar",
             section = prayerSection,
-            position = 6
+            position = 7
     )
     default int prayerBarHeight()
     {
@@ -316,7 +328,7 @@ public interface AdvancedHpBarConfig extends Config
             name = "Prayer Flick Helper",
             description = "Display a Prayer Flicker Helper",
             section = prayerSection,
-            position = 7
+            position = 8
     )
     default boolean prayerFlickOn()
     {
@@ -328,7 +340,7 @@ public interface AdvancedHpBarConfig extends Config
             name = "Prayer Flick Color",
             description = "Color for Player Flick Helper",
             section = prayerSection,
-            position = 8
+            position = 9
     )
     default Color prayerFlickColor()
     {

@@ -4,6 +4,7 @@ import net.runelite.api.Client;
 import net.runelite.api.MenuEntry;
 import net.runelite.api.Perspective;
 import net.runelite.api.Player;
+import net.runelite.api.Prayer;
 import net.runelite.api.Skill;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.Point;
@@ -54,7 +55,12 @@ public class AdvancedHpBarOverlay extends Overlay
             return null;
         }
 
-        if (localPlayer.getHealthScale() < 0 && !config.alwaysOn())
+        final boolean inCombat = localPlayer.getHealthScale() >= 0;
+        final boolean showHpBar = inCombat || config.alwaysOn();
+        final boolean showPrayerBar = config.showPrayerBar()
+                && (showHpBar || (config.showPrayerBarWhenActive() && isAnyPrayerActive()));
+
+        if (!showHpBar && !showPrayerBar)
         {
             return null;
         }
@@ -77,14 +83,30 @@ public class AdvancedHpBarOverlay extends Overlay
         final int barWidth = config.barWidth();
         final int prayerBarHeight = config.prayerBarHeight();
 
-        renderHpBar(g, barX, barY, barWidth);
-
-        if (config.showPrayerBar())
+        if (showHpBar)
         {
-            renderPrayerBar(g, barX, barY, barWidth, prayerBarHeight);
+            renderHpBar(g, barX, barY, barWidth);
+        }
+
+        if (showPrayerBar)
+        {
+            // When the HP bar isn't drawn, the prayer bar stands alone.
+            renderPrayerBar(g, barX, barY, barWidth, prayerBarHeight, !showHpBar);
         }
 
         return null;
+    }
+
+    private boolean isAnyPrayerActive()
+    {
+        for (Prayer prayer : Prayer.values())
+        {
+            if (client.getVarbitValue(prayer.getVarbit()) == 1)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     private int getRestoreValue(String skill)
@@ -291,17 +313,19 @@ public class AdvancedHpBarOverlay extends Overlay
         }
     }
 
-    private void renderPrayerBar(Graphics2D g, int barX, int barY, int barWidth, int barHeight)
+    private void renderPrayerBar(Graphics2D g, int barX, int barY, int barWidth, int barHeight, boolean standalone)
     {
         final int hpBarHeight = config.hpBarHeight();
         final int maxPrayer = client.getRealSkillLevel(Skill.PRAYER);
         final int currentPrayer = client.getBoostedSkillLevel(Skill.PRAYER);
-        final int prayerBarY = barY + hpBarHeight + PRAYER_BAR_GAP;
-        final int barFillerY = barY + hpBarHeight;
+        final int prayerBarY = standalone ? barY : barY + hpBarHeight + PRAYER_BAR_GAP;
         final int prayerRestoreValue = getRestoreValue("Prayer");
 
-        g.setColor(Color.BLACK);
-        g.fillRect(barX, barFillerY, barWidth, GAP_FILLER);
+        if (!standalone)
+        {
+            g.setColor(Color.BLACK);
+            g.fillRect(barX, barY + hpBarHeight, barWidth, GAP_FILLER);
+        }
 
         g.setColor(config.prayerBackgroundColor());
         g.fillRect(barX, prayerBarY, barWidth, barHeight);
