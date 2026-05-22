@@ -118,7 +118,7 @@ public interface AdvancedHpBarConfig extends Config
     )
     default boolean displaySegments()
     {
-        return true;
+        return false;
     }
 
     @ConfigItem(
